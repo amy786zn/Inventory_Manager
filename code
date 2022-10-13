@@ -1,0 +1,60 @@
+from tabulate import tabulate                     # Import tabulate module as specified
+
+class Shoe:                                              # create class 
+    def __init__(self):                                 # initialize 
+        self.products = []
+
+    def read_data(self):                            # create functions and include variables as below
+        try:
+            f = open("inventory.txt", "r")
+            keys = next(f).strip().split(",")
+            for line in f:
+                self.products.append(dict(zip(keys, line.strip().split(","))))
+        except FileNotFoundError:
+            print("File not found: inventory.txt")
+
+    def restock(self):
+        lowest_quantity = None
+        lowest_product = None
+        for product in self.products:
+            if lowest_quantity is None or int(product["Quantity"]) < lowest_quantity:
+                lowest_quantity = int(product["Quantity"])
+                lowest_product = product
+        if product != None:
+            product["Quantity"] = 100
+
+    def sale(self):
+        highest_quantity = None
+        highest_product = None
+        for product in self.products:
+            if highest_quantity is None or int(product["Quantity"]) < highest_quantity:
+                highest_quantity = int(product["Quantity"])
+                highest_product = product
+        if product != None:
+            product["Cost"] = float(product["Cost"]) * .75
+
+    def value_per_item(self):
+        for product in self.products:
+            product["Value"] = float(product["Cost"]) * int(product["Quantity"])
+
+def search(shoes, code):
+    found = []
+    for shoe in shoes:
+        for product in shoe.products:
+            if product["Code"] == code:
+                found.append(shoe)
+                break
+    return found
+
+# Create 5 Shoe objects
+shoes = []                                      # create list and loop through 
+for i in range(5):
+    shoe = Shoe()
+    shoe.read_data()
+    shoe.value_per_item()
+    shoes.append(shoe)
+
+
+print(tabulate(shoes[0].products, headers={"Country": "Country", "Country": "Country", "Code": "Code", "Product": "Product", "Cost": "Cost", "Quantity": "Quantity"}))
+# Print for each parameter
+
